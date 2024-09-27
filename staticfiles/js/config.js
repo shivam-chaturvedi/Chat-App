@@ -1,4 +1,4 @@
 window.AppConfig={
-    serverDomain:"localhost:8000",
-    shareDomain:"localhost:8000"
+    serverDomain:"https://chat-5mm6tg9sc-shivam-chaturvedis-projects.vercel.app",
+    shareDomain:"https://chat-5mm6tg9sc-shivam-chaturvedis-projects.vercel.app"
 }
