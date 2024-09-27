@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Anonymous Chat App</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        {% load static %}
+        <!-- <link rel="stylesheet" href="{% static 'css/output.css' %}"> -->
+        <script src="{% static 'js/config.js' %}"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    </head>
+    <body>
+        <div x-data="app()" x-init="initialize()">
+
+        <div class="flex flex-col items-center justify-center h-screen bg-slate-600" x-bind:class="{'blur-sm': joinGroupForm || createGroupForm}">
+            <h1 class="text-4xl font-bold text-white m-3">Chat Anonymously With Anyone Anywhere</h1>
+            <h3 class="font-semibold text-gray-50 text-2xl p-4">Experience an exciting free random chat alternative to find
+                friends, connect with stranger, and
+                talk with different people in random anonymous chat rooms. No
+                registration required.</h3>
+                <div class=" w-screen flex justify-around">
+                    <button  @click="openJoinGroupForm" class="m-2 border-2 border-green-500 bg-green-500 p-2 uppercase tracking-widest rounded-lg shadow-md hover:bg-green-700 hover:text-white hover:shadow-lg">Join An Existing Group</button>
+                    <button @click="openCreateGroupForm"  class="m-2 border-2 border-green-500 bg-green-500 p-2 uppercase tracking-widest rounded-lg shadow-md hover:bg-green-700 hover:text-white hover:shadow-lg">Create a New Group</button>
+                </div>
+        </div>
+        
+        <div x-show="createGroupForm" @click.away="createGroupForm=false;" class="flex border-2 flex-col absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl shadow-md bg-gray-300 bg-opacity-80 w-auto md:text-2xl  p-4">
+            <input x-model="groupNameinput" class="m-2 transform focus:scale-105 p-2" type="text" placeholder="Enter Group Name">
+            <input x-model="groupLimitInput" class="m-2 transform focus:scale-105 p-2" type="number" placeholder="Group Limit"  min="2">
+            <input x-model="groupPasswordInput" class="m-2 transform focus:scale-105 p-2" type="password" placeholder="Create Password">
+            
+            <label class="mt-2 ml-2 p-2" for="member-name">Join as</label>
+            <input x-model="usernameInput" class="mb-2 ml-2 transform focus:scale-105 p-2" type="text" placeholder="Enter Your Name" name="member-name">
+            <p x-text="errormsg" class="text-red-600"></p>
+            <button @click="createGroup" class="m-2 border-2 border-green-500 bg-green-500 p-2 uppercase tracking-widest rounded-lg shadow-md hover:bg-green-700 hover:text-white hover:shadow-lg">Create Group</button>
+        </div>
+        <div x-show="joinGroupForm" @click.away="joinGroupForm=false;" class="flex border-2 flex-col absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl shadow-md bg-gray-300 bg-opacity-80 w-auto md:text-2xl  p-4">
+            <input x-model="groupIdInput" class="m-2 transform focus:scale-105 p-2" type="text" placeholder="Enter Group ID">
+            <input x-model="groupPasswordInput" class="m-2 transform focus:scale-105 p-2" type="password" placeholder="Enter Password">
+            
+            <label class="mt-2 ml-2 p-2" for="member-name">Join as</label>
+            <input x-model="usernameInput" class="mb-2 ml-2 transform focus:scale-105 p-2" type="text" placeholder="Enter Your Name" name="member-name">
+            <p x-text="errormsg" class="text-red-600"></p>
+            <button @click="joinGroup" class="m-2 border-2 border-green-500 bg-green-500 p-2 uppercase tracking-widest rounded-lg shadow-md hover:bg-green-700 hover:text-white hover:shadow-lg ">Join Group</button>
+        </div>
+
+    </div>
+
+    <script>
+        function app(){
+            return {
+                errormsg:'',
+                formApi:`http://${window.AppConfig.serverDomain}/`,
+                joinGroupForm:false,
+                createGroupForm:false,
+                groupIdInput:'',
+                groupNameinput:'',
+                groupLimitInput:'',
+                usernameInput:'',
+                groupPasswordInput:'',
+                shareMode:false,
+                initialize(){
+                    const memberid=localStorage.getItem("memberid");
+                    if(memberid){
+                        window.location.replace("/chat")
+                    }
+                    const urlParams=new URLSearchParams(window.location.search);
+                    groupId=urlParams.get("groupid")
+                    password=urlParams.get("pass")
+                    // console.log(groupId,password)
+                    if(groupId!==null && password!==null){
+                        this.joinGroupForm=true;
+                        this.createGroupForm=false;
+                        this.groupIdInput=groupId;
+                        this.groupPasswordInput=password;
+                        this.shareMode=true;
+                    }
+                },
+                openCreateGroupForm(e){
+                    this.errormsg='';
+                    this.groupPasswordInput='';
+                    this.createGroupForm=true;
+                    this.joinGroupForm=false;
+                   
+                },
+                openJoinGroupForm(e){
+                    this.errormsg='';
+                    // this.groupPasswordInput='';
+                    this.joinGroupForm=true;
+                    this.createGroupForm=false;
+                },
+                async createGroup(){
+                    this.errormsg=''
+                    if(this.groupNameinput.trim()==="" || this.usernameInput.trim()==="" || this.groupPasswordInput.trim()===''){
+                        this.errormsg="Please,Fill All The Fields First!";
+                        return;
+                    }
+                    if(this.groupPasswordInput.trim().length<8){
+                        this.errormsg="Password must be at least 8 characters long";
+                        return;
+                    }
+                    if(this.groupLimitInput<2){
+                        this.errormsg="Group Limit Must Be Greater Than 1";
+                        return ;
+                    }
+                    const data={
+                        createGroup:true,
+                        groupName:this.groupNameinput,
+                        groupLimit:this.groupLimitInput,
+                        username:this.usernameInput,
+                        password:this.groupPasswordInput,
+                    }
+                    try{
+                        const response=await fetch(
+                            this.formApi,{
+                                method:'POST',
+                                headers:{'Content-Type':'application/json'},
+                                body:JSON.stringify(data),
+                        });
+                        const responsedata=await response.json();
+                        if(response.ok){
+                            localStorage.setItem('memberid',responsedata.memberid);
+                            window.location.replace('/chat');
+                        }
+                        else{
+                            console.log(responsedata)
+                        }
+                    }
+                    catch(error){
+                        console.error(error);
+                    }
+
+                },
+                async joinGroup(){
+                    if(this.groupIdInput.trim()==="" || this.usernameInput.trim()===""){
+                        this.errormsg="Please,Fill All The Fields First!";
+                        return;
+                    }
+                    const data={
+                        createGroup:false,
+                        groupId:this.groupIdInput,
+                        username:this.usernameInput,
+                        password:this.groupPasswordInput,
+                        sharemode:this.shareMode,
+                    }
+                    try{
+                        const res=await fetch(this.formApi,
+                        {method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify(data)
+                    });
+                    const resData=await res.json();
+                    if(res.ok){
+                        // console.log(resData)
+                        localStorage.setItem('memberid',resData.memberid);
+                        window.location.replace('/chat.html');   
+                    }
+                    else{
+                        this.errormsg=resData.error;
+                        // console.log(resData);
+                        console.clear()
+                    }
+                    }
+                    catch(error){
+                        console.log(error)
+                    }
+                },
+            }
+        }
+    </script>
+
+    </body>
+
+</html>
