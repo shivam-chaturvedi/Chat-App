@@ -26,15 +26,14 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.vercel.app', '.now.sh', '12
 
 # Application definition
 INSTALLED_APPS = [
-    'daphne',
-    'channels',
     'corsheaders',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.staticfiles',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'ChatApp',
 ]
 
