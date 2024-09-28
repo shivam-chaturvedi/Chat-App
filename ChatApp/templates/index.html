@@ -52,7 +52,7 @@
         function app(){
             return {
                 errormsg:'',
-                formApi:`https://${window.AppConfig.serverDomain}/`,
+                formApi:`https://anonmyous-chat-app.vercel.app`,
                 joinGroupForm:false,
                 createGroupForm:false,
                 groupIdInput:'',
@@ -155,7 +155,7 @@
                     if(res.ok){
                         // console.log(resData)
                         localStorage.setItem('memberid',resData.memberid);
-                        window.location.replace('/chat.html');   
+                        window.location.replace('/chat');   
                     }
                     else{
                         this.errormsg=resData.error;
