@@ -1,4 +1,4 @@
 window.AppConfig={
-    serverDomain:"localhost:8000",
-    shareDomain:"localhost:8000"
+    serverDomain:"anonmyous-chat-app.vercel.app",
+    shareDomain:"anonmyous-chat-app.vercel.app"
 }

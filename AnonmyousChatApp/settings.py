@@ -38,10 +38,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise Middleware for static files
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # Ensure this is above CommonMiddleware
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -50,18 +50,26 @@ MIDDLEWARE = [
 ]
 
 # CORS Configuration
-CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins
-CORS_ALLOW_ALL_METHODS = True   # Allow all methods
+CORS_ALLOW_CREDENTIALS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://anonmyous-chat-app.vercel.app","https://chat-app-six-blush-10.vercel.app","https://shivamchaturvedi.vercel.app","https://latest-portfolio-psi-jade.vercel.app",
+]
+
+# CORS_URLS_REGEX = r'^/blogs/.*$'
+
 CORS_ALLOW_HEADERS = [
-    'authorization',
-    'content-type',
-    'x-requested-with',
-    'accept',
-    'origin',
-    'user-agent',
-]  # You can customize the allowed headers if needed
+    "X-API-KEY",
+    "content-type",
+    "authorization",
+    "accept",
+    "origin",
+    "x-csrftoken",
+]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 ROOT_URLCONF = 'AnonmyousChatApp.urls'
 
@@ -126,6 +134,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
 import os
 
 STATIC_URL = '/static/'
