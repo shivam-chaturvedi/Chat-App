@@ -14,15 +14,15 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # API Key
-API_KEY = env('API_KEY')
+# API_KEY = env('API_KEY')
 
 # Secret Key
-SECRET_KEY = env('API_KEY')  # Updated to use SECRET_KEY instead of API_KEY
+SECRET_KEY = "krsjgikjshdbuSIDYW7OYSHUIYUISHDKSAJDLKSAULDISAYULDISAYJHCGSAT" # Updated to use SECRET_KEY instead of API_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.vercel.app', '.now.sh', '127.0.0.1', 'localhost'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*', '.now.sh', '127.0.0.1', 'localhost'])
 
 # Application definition
 INSTALLED_APPS = [
@@ -51,11 +51,12 @@ MIDDLEWARE = [
 
 # CORS Configuration
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 
-CORS_ALLOWED_ORIGINS = [
-    "https://anonmyous-chat-app.vercel.app","https://chat-app-six-blush-10.vercel.app","https://shivamchaturvedi.vercel.app","https://latest-portfolio-psi-jade.vercel.app",
-]
+# CORS_ALLOWED_ORIGINS = [
+# "*"
+# ]
 
 # CORS_URLS_REGEX = r'^/blogs/.*$'
 
@@ -91,15 +92,24 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'AnonmyousChatApp.asgi.application'
 
-# Database
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+# Database FOR PRODUCTION
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DATABASE'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
-        'PORT': env('POSTGRES_PORT', default=5432),
+        'NAME': 'db_557w',  # Extracted from the URL
+        'USER': 'db_557w_user',  # Extracted from the URL
+        'PASSWORD': 'ekxZTikth5VMgNkce7X6iyWCtHkE6bJM',  # Extracted from the URL
+        'HOST': 'dpg-cua9mr1u0jms73fmpa6g-a.singapore-postgres.render.com',  # Extracted from the URL
+        'PORT': '5432',  # Default PostgreSQL port (assumed if not explicitly mentioned)
     }
 }
 
@@ -119,15 +129,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Channel Layers
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": ['redis://default:df7vgruThVJNGKc699wRINTCkpatm3n3@redis-16904.c258.us-east-1-4.ec2.redns.redis-cloud.com:16904'],
-        },
-    },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
+
+
+# # Channel Layers For production
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": ['redis://default:df7vgruThVJNGKc699wRINTCkpatm3n3@redis-16904.c258.us-east-1-4.ec2.redns.redis-cloud.com:16904'],
+#         },
+#     },
+# }
+
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'

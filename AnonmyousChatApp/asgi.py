@@ -24,4 +24,4 @@ application = ProtocolTypeRouter({
 })
 
 # Alias app for compatibility
-app = application
+# app = application
